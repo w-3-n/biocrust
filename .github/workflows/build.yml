@@ -1,0 +1,35 @@
+name: Build Desktop Apps
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger build when you push a tag like v1.0.0
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Build Electron App
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release: true

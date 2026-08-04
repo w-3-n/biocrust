@@ -1,0 +1,41 @@
+{
+  "name": "biocrust",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "main.cjs",
+  "build": {
+    "appId": "com.biocrust.game",
+    "productName": "Biocrust",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "main.cjs"
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "oxlint": "^1.75.0",
+    "vite": "^5.4.21"
+  }
+}
