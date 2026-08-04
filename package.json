@@ -1,7 +1,13 @@
 {
   "name": "biocrust",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.4",
+  "description": "Biocrust Explorer Game",
+  "author": "w-3-n",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w-3-n/biocrust.git"
+  },
   "type": "module",
   "main": "main.cjs",
   "build": {
