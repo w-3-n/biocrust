@@ -15,7 +15,8 @@
       "main.cjs"
     ],
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "identity": null
     },
     "win": {
       "target": "nsis"
