@@ -44,7 +44,7 @@ export const MergeUI = () => {
   return (
     <div className="level-container">
       <div className="level-header">
-        <h2>第三关：生物结皮大合成</h2>
+        <h2>{isCompleted ? '第3关：生物结皮大合成' : '第3关'}</h2>
         <p>点击空格子放置【藓植株】，拖拽相同的图标进行合成！<br/>目标：合成【绿色山坡】</p>
       </div>
       

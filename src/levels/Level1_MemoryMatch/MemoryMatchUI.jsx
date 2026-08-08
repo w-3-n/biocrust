@@ -5,6 +5,17 @@ import { useGameManager } from '../../store/GameManager';
 export const MemoryMatchUI = () => {
   const { unlockKnowledge, advanceLevel } = useGameManager();
   
+  const CRUST_TYPES = [
+    { name: '微鞘藻', emoji: '🦠' },
+    { name: '念珠藻', emoji: '🧬' },
+    { name: '颤藻', emoji: '〰️' },
+    { name: '席藻', emoji: '🧶' },
+    { name: '真藓', emoji: '🌿' },
+    { name: '地钱', emoji: '🍀' },
+    { name: '石蕊', emoji: '🍄' },
+    { name: '绿球藻', emoji: '🟢' }
+  ];
+  
   const handleComplete = () => {
     unlockKnowledge(1); // Unlocks Moss knowledge
     setTimeout(() => {
@@ -19,8 +30,8 @@ export const MemoryMatchUI = () => {
   return (
     <div className="level-container">
       <div className="level-header">
-        <h2>第一关：藓类对对碰</h2>
-        <p>记忆配对，找出8对蓝细菌照片！</p>
+        <h2>{matchedIndices.length === 16 ? '第1关：藓类对对碰' : '第1关'}</h2>
+        <p>记忆配对，将2张相同照片进行消除！</p>
       </div>
       
       <div className="memory-grid">
@@ -38,8 +49,9 @@ export const MemoryMatchUI = () => {
                 <div className="card-front">
                   ?
                 </div>
-                <div className="card-back">
-                  菌 {card.type + 1}
+                <div className="card-back" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: '2.5rem', lineHeight: 1 }}>{CRUST_TYPES[card.type % 8].emoji}</span>
+                  <span style={{ fontSize: '0.9rem', marginTop: '4px' }}>{CRUST_TYPES[card.type % 8].name}</span>
                 </div>
               </div>
             </div>

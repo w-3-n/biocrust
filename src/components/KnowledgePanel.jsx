@@ -35,7 +35,7 @@ export const KnowledgePanel = () => {
           const isUnlocked = unlockedKnowledge.includes(item.id);
           return (
             <div key={item.id} className={`knowledge-item ${isUnlocked ? 'unlocked' : 'locked'}`}>
-              <h3>{item.title}</h3>
+              <h3>{isUnlocked ? item.title : '***'}</h3>
               <p>{isUnlocked ? item.text : '【未解锁】通过关卡获取知识'}</p>
             </div>
           );

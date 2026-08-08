@@ -59,8 +59,8 @@ export const JigsawUI = () => {
   return (
     <div className="level-container">
       <div className="level-header">
-        <h2>第二关：长城修理工</h2>
-        <p>拼图挑战：拖拽碎片还原带有生物结皮的长城。</p>
+        <h2>{isCompleted ? '第2关：长城修理工' : '第2关'}</h2>
+        <p>拖拽碎片，还原完整的照片！</p>
       </div>
       
       <div className="jigsaw-game-area">

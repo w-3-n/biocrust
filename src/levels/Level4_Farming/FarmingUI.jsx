@@ -6,18 +6,19 @@ export const FarmingUI = () => {
   const { unlockKnowledge, advanceLevel } = useGameManager();
   const [isCompleted, setIsCompleted] = useState(false);
   
-  const handleComplete = () => {
+  const handleComplete = (finalScore) => {
     setIsCompleted(true);
     unlockKnowledge(4); // Terraforming knowledge
   };
 
-  const { grid, waterCrust, restart, hasFailed } = useFarming(handleComplete);
+  const { grid, waterCrust, restart, score } = useFarming(handleComplete);
 
   return (
     <div className="level-container">
       <div className="level-header">
-        <h2>第四关：行星农场</h2>
-        <p>太空培育基地：当生物结皮出现时，快速点击它们进行“浇注营养液”！<br/>不要让它们干死，培育满整个区域即可通关。</p>
+        <h2>{isCompleted ? '第4关：行星农场' : '第4关'}</h2>
+        <p>太空培育基地：当生物结皮出现时，快速点击它们进行“浇灌营养液”！<br/>不要让它们干死，全部16块结皮培育成功即可通关。</p>
+        <div style={{ marginTop: '10px', fontSize: '1.2rem', fontWeight: 'bold', color: '#4ade80' }}>当前积分: {score}</div>
       </div>
       
       <div className="farming-grid">
@@ -27,8 +28,16 @@ export const FarmingUI = () => {
             className={`farming-cell ${item ? item.state : 'empty'}`}
             onClick={() => waterCrust(index)}
           >
-            {item && (item.state === 'healthy' || item.state === 'thirsty') && <div className="crust-alive pulse">🦠</div>}
-            {item && item.state === 'dead' && <div className="crust-dead">枯萎</div>}
+            {item && (item.state === 'healthy' || item.state === 'yellow' || item.state === 'red') && (
+              <div className="crust-alive pulse" style={{ position: 'relative' }}>
+                🦠
+                {item.penaltyId && (
+                  <div key={item.penaltyId} className={`penalty-text ${item.penaltyColor}`}>
+                    {item.penalty}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -41,13 +50,7 @@ export const FarmingUI = () => {
         </div>
       )}
       
-      {hasFailed && !isCompleted && (
-        <div className="fail-message fade-in">
-          <h3>培育失败！</h3>
-          <p>有生物结皮枯死了。根据LDD规则，如果漏掉一次营养液则培育失败。</p>
-          <button className="btn-retry" onClick={restart}>重新开始</button>
-        </div>
-      )}
+
     </div>
   );
 };

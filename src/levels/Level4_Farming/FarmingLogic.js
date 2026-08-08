@@ -1,25 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
 
 const GRID_SIZE = 16;
-const THIRSTY_MS = 3000; // Turns yellow after 3 seconds
-const DEAD_MS = 6000; // Dies after 6 seconds
+const THIRSTY_MS = 4000; // Turns yellow after 4s (more forgiving)
+const DEAD_MS = 8000; // Turns red after 8s
 
 export const useFarming = (onComplete) => {
   const [grid, setGrid] = useState(Array(GRID_SIZE).fill(null));
   const [gameActive, setGameActive] = useState(true);
+  const [score, setScore] = useState(0);
 
   // Win condition checker
   useEffect(() => {
     if (!gameActive) return;
-    const isFull = grid.every(item => item !== null);
-    if (isFull) {
-      const allAlive = grid.every(item => item && item.state !== 'dead');
-      if (allAlive) {
-        setGameActive(false);
-        onComplete();
-      }
+    const isFullAndNotRed = grid.every(item => item !== null && item.state !== 'red');
+    if (isFullAndNotRed) {
+      setGameActive(false);
+      onComplete(score);
     }
-  }, [grid, gameActive, onComplete]);
+  }, [grid, gameActive, onComplete, score]);
 
   // Dynamic Spawner loop
   useEffect(() => {
@@ -28,8 +26,8 @@ export const useFarming = (onComplete) => {
     let timeoutId;
 
     const spawnCycle = () => {
-      // Random interval between 1s and 5s (1000ms to 5000ms)
-      const nextInterval = Math.floor(Math.random() * 4000) + 1000;
+      // Random interval between 1.5s and 3.5s
+      const nextInterval = Math.floor(Math.random() * 2000) + 1500;
       
       timeoutId = setTimeout(() => {
         setGrid(prev => {
@@ -84,9 +82,23 @@ export const useFarming = (onComplete) => {
             let newState = item.state;
             
             if (timeSinceWater > DEAD_MS) {
-              newState = 'dead';
+              newState = 'red';
+              if (!item.deductedRed) {
+                setScore(s => s - 15); // Deduct 15
+                item.deductedRed = true;
+                item.penalty = -15;
+                item.penaltyColor = 'red';
+                item.penaltyId = Date.now() + '-r';
+              }
             } else if (timeSinceWater > THIRSTY_MS) {
-              newState = 'thirsty';
+              newState = 'yellow';
+              if (!item.deductedYellow) {
+                setScore(s => s - 10); // Deduct 10
+                item.deductedYellow = true;
+                item.penalty = -10;
+                item.penaltyColor = 'yellow';
+                item.penaltyId = Date.now() + '-y';
+              }
             } else {
               newState = 'healthy';
             }
@@ -109,9 +121,13 @@ export const useFarming = (onComplete) => {
     if (!gameActive) return;
     setGrid(prev => {
       const item = prev[index];
-      if (item && (item.state === 'healthy' || item.state === 'thirsty')) {
+      if (item && (item.state === 'healthy' || item.state === 'yellow' || item.state === 'red')) {
+        let reward = 10;
+        if (item.state === 'yellow') reward = 5;
+        if (item.state === 'red') reward = 2;
+        setScore(s => s + reward); // Gain points based on state
         const newGrid = [...prev];
-        newGrid[index] = { ...item, lastWateredTime: Date.now(), state: 'healthy' };
+        newGrid[index] = { ...item, lastWateredTime: Date.now(), state: 'healthy', deductedYellow: false, deductedRed: false };
         return newGrid;
       }
       return prev;
@@ -121,15 +137,8 @@ export const useFarming = (onComplete) => {
   const restart = () => {
     setGrid(Array(GRID_SIZE).fill(null));
     setGameActive(true);
+    setScore(0);
   };
 
-  const hasFailed = grid.some(item => item && item.state === 'dead');
-
-  useEffect(() => {
-    if (hasFailed) {
-      setGameActive(false);
-    }
-  }, [hasFailed]);
-
-  return { grid, waterCrust, restart, hasFailed };
+  return { grid, waterCrust, restart, score };
 };
